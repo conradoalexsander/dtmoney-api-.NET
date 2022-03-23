@@ -1,9 +1,9 @@
 ﻿using DTMoney.Api.Model;
 using Microsoft.EntityFrameworkCore;
 
-internal class DtMoneyDb : DbContext
+public class DtMoneyDbContext : DbContext
 {
-    public DtMoneyDb(DbContextOptions<DtMoneyDb> options) 
+    public DtMoneyDbContext(DbContextOptions<DtMoneyDbContext> options) 
         : base(options) { }
 
     public DbSet<FinancialTransaction> FinancialTransactions => Set<FinancialTransaction>();
