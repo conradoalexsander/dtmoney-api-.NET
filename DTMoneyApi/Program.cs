@@ -1,5 +1,6 @@
 using DTMoney.Api.Controller;
 using DTMoney.Api.Data;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -22,6 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFinancialTransactionRepository, FinancialTransactionRepository>();
+
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Transient);
+
 
 var app = builder.Build();
 

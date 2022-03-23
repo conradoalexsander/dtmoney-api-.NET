@@ -1,4 +1,7 @@
-﻿namespace DTMoney.Api.DTO
+﻿using DTMoney.Api.Model;
+using FluentValidation;
+
+namespace DTMoney.Api.DTO
 {
     public class FinancialTransactionDTO
     {
@@ -6,5 +9,23 @@
         public double Amount { get; set; }
         public string Type { get; set; }
         public string Category { get; set; }
+    }
+
+    public class FinancialTransactionValidator : AbstractValidator<FinancialTransactionDTO>
+    {
+        public FinancialTransactionValidator()
+        {
+            RuleFor(transaction => transaction.Type)
+                .IsEnumName(typeof(FinancialTransactionType), caseSensitive: false)
+                .WithMessage((type) => $"Invalid type. Provided value: {type}, allowed types: {GetTransactionTypesStringMessage()}");
+        }
+
+        private string GetTransactionTypesStringMessage()
+        {
+            var types = Enum.GetNames(typeof(FinancialTransactionType));
+
+            return string.Join(", ", types);
+
+        }
     }
 }

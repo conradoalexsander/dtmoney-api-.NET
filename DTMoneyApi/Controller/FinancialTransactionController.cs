@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DTMoney.Api.Data;
 using DTMoney.Api.DTO;
+using DTMoney.Api.Extensions;
 using DTMoney.Api.Model;
+using FluentValidation;
 
 namespace DTMoney.Api.Controller
 {
@@ -31,14 +33,27 @@ namespace DTMoney.Api.Controller
 
         private static async Task<IResult> GetTransactionById(int id, IFinancialTransactionRepository repository)
         {
+
+
             return await repository.GetFinancialTransaction(id)
                                 is FinancialTransaction transaction
                                     ? Results.Ok(transaction)
                                     : Results.NotFound();
         }
 
-        private static async Task<IResult> CreateTransaction(FinancialTransactionDTO inputTransaction, IFinancialTransactionRepository repository, IMapper mapper)
+        private static async Task<IResult> CreateTransaction(
+            FinancialTransactionDTO inputTransaction,
+            IFinancialTransactionRepository repository,
+            IMapper mapper,
+            IValidator<FinancialTransactionDTO> validator)
         {
+            var validationResult = validator.Validate(inputTransaction);
+
+            if (!validationResult.IsValid)
+            {
+                return Results.ValidationProblem(validationResult.ToValidationProblems());
+            }
+
             var mappedTransaction = mapper.Map<FinancialTransaction>(inputTransaction);
 
             var transaction = await repository.CreateFinancialTransaction(mappedTransaction);

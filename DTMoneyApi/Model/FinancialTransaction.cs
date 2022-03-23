@@ -7,7 +7,6 @@
         public double Amount { get; set; }
         public string Category { get; set; }
         public DateTime CreatedAt { get; set; }
-
         public FinancialTransactionType Type { get; set; }
 
     }
