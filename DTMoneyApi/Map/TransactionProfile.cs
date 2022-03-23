@@ -11,7 +11,8 @@ namespace DTMoney.Api.Map
             CreateMap<FinancialTransactionDTO, FinancialTransaction>()
                 .ForMember(
                     dest => dest.Type,
-                    opt => opt.MapFrom(src => $"{src.Type}"));
+                    opt => opt.MapFrom(src => $"{src.Type.Trim().ToUpperInvariant()}"))
+                .ReverseMap();
         }
     }
 }

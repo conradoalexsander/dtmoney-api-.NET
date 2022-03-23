@@ -2,7 +2,6 @@
 using DTMoney.Api.Data;
 using DTMoney.Api.DTO;
 using DTMoney.Api.Model;
-using Microsoft.EntityFrameworkCore;
 
 namespace DTMoney.Api.Controller
 {
@@ -47,9 +46,12 @@ namespace DTMoney.Api.Controller
             return Results.Created($"/transactions/{transaction.Id}", transaction);
         }
 
-        private static async Task<IResult> UpdateTransaction(FinancialTransaction inputTransaction, IFinancialTransactionRepository repository)
+        private static async Task<IResult> UpdateTransaction(int id, FinancialTransactionDTO inputTransaction, IFinancialTransactionRepository repository, IMapper mapper)
         {
-            return await repository.UpdateFinancialTransaction(inputTransaction)
+            var mappedTransaction = mapper.Map<FinancialTransaction>(inputTransaction);
+            mappedTransaction.Id = id;
+
+            return await repository.UpdateFinancialTransaction(mappedTransaction)
                 ? Results.NoContent()
                 : Results.NotFound();
         }
