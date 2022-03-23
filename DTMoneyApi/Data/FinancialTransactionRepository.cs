@@ -18,6 +18,7 @@ namespace DTMoney.Api.Data
             {
                 _dbContext.FinancialTransactions.Remove(todo);
                 await _dbContext.SaveChangesAsync();
+
                 return true;
             }
 

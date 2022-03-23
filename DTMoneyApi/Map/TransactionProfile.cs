@@ -11,9 +11,7 @@ namespace DTMoney.Api.Map
             CreateMap<FinancialTransactionDTO, FinancialTransaction>()
                 .ForMember(
                     dest => dest.Type,
-                    option => option.MapFrom(source => Enum.Parse(typeof(FinancialTransactionType), source.Type))
-                );
-
+                    opt => opt.MapFrom(src => $"{src.Type}"));
         }
     }
 }

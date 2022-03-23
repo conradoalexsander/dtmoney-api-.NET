@@ -1,4 +1,6 @@
-﻿using DTMoney.Api.Data;
+﻿using AutoMapper;
+using DTMoney.Api.Data;
+using DTMoney.Api.DTO;
 using DTMoney.Api.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ namespace DTMoney.Api.Controller
             app.MapGet("/transactions", GetAllTransactions);
 
             app.MapGet("/transactions/{id}", GetTransactionById);
+
+            app.MapGet("/transactions/types", GetTransactionTypes);
 
             app.MapPost("/transactions", CreateTransaction);
 
@@ -34,11 +38,13 @@ namespace DTMoney.Api.Controller
                                     : Results.NotFound();
         }
 
-        private static async Task<IResult> CreateTransaction(FinancialTransaction inputTransaction, IFinancialTransactionRepository repository)
+        private static async Task<IResult> CreateTransaction(FinancialTransactionDTO inputTransaction, IFinancialTransactionRepository repository, IMapper mapper)
         {
-            var transaction = await repository.CreateFinancialTransaction(inputTransaction);
+            var mappedTransaction = mapper.Map<FinancialTransaction>(inputTransaction);
 
-            return Results.Created($"/transactions/{inputTransaction.Id}", transaction);
+            var transaction = await repository.CreateFinancialTransaction(mappedTransaction);
+
+            return Results.Created($"/transactions/{transaction.Id}", transaction);
         }
 
         private static async Task<IResult> UpdateTransaction(FinancialTransaction inputTransaction, IFinancialTransactionRepository repository)
@@ -46,6 +52,11 @@ namespace DTMoney.Api.Controller
             return await repository.UpdateFinancialTransaction(inputTransaction)
                 ? Results.NoContent()
                 : Results.NotFound();
+        }
+
+        private static async Task<IResult> GetTransactionTypes()
+        {
+            return Results.Ok(Enum.GetNames(typeof(FinancialTransactionType)));
         }
 
         private static async Task<IResult> DeleteTransactionById(int id, IFinancialTransactionRepository repository)
