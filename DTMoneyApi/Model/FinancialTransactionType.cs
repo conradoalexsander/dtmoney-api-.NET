@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace DTMoney.Api.Model
+﻿namespace DTMoney.Api.Model
 {
     public enum FinancialTransactionType
     {

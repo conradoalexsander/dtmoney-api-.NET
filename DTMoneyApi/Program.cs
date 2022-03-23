@@ -1,43 +1,26 @@
-using DTMoney.Api.Controller;
-using DTMoney.Api.Data;
-using FluentValidation;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using DTMoney.Api.Extensions.Configuration;
+using DTMoney.Api.Routes;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DtMoneyDbContext>(options => options.UseInMemoryDatabase("DtMoney"));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDatabaseConfiguration();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddJsonSerializerConfiguration();
 
-builder.Services.Configure<JsonOptions>(options =>
-{
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+builder.Services.AddSwaggerConfiguration();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddFluentValidationConfiguration();
 
-builder.Services.AddScoped<IFinancialTransactionRepository, FinancialTransactionRepository>();
-
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Transient);
-
+builder.Services.RegisterRepositories();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerConfiguration();
 
 app.UseHttpsRedirection();
 
-app.RegisterFinancialTransactionController();
+app.UseFinancialTransactionRoutes();
 
 app.Run();

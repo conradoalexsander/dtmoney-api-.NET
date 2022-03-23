@@ -17,7 +17,7 @@ namespace DTMoney.Api.DTO
         {
             RuleFor(transaction => transaction.Type)
                 .IsEnumName(typeof(FinancialTransactionType), caseSensitive: false)
-                .WithMessage((type) => $"Invalid type. Provided value: {type}, allowed types: {GetTransactionTypesStringMessage()}");
+                .WithMessage((transaction) => $"Invalid type. Provided value: {transaction.Type}, allowed types: {GetTransactionTypesStringMessage()}.");
         }
 
         private string GetTransactionTypesStringMessage()
@@ -25,7 +25,6 @@ namespace DTMoney.Api.DTO
             var types = Enum.GetNames(typeof(FinancialTransactionType));
 
             return string.Join(", ", types);
-
         }
     }
 }

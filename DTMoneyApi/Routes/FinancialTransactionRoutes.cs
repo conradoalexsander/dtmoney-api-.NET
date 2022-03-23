@@ -5,11 +5,11 @@ using DTMoney.Api.Extensions;
 using DTMoney.Api.Model;
 using FluentValidation;
 
-namespace DTMoney.Api.Controller
+namespace DTMoney.Api.Routes
 {
-    public static class FinancialTransactionController
+    public static class FinancialTransactionRoutes
     {
-        public static void RegisterFinancialTransactionController(this WebApplication app)
+        public static void UseFinancialTransactionRoutes(this WebApplication app)
         {
 
             app.MapGet("/transactions", GetAllTransactions);
@@ -61,8 +61,20 @@ namespace DTMoney.Api.Controller
             return Results.Created($"/transactions/{transaction.Id}", transaction);
         }
 
-        private static async Task<IResult> UpdateTransaction(int id, FinancialTransactionDTO inputTransaction, IFinancialTransactionRepository repository, IMapper mapper)
+        private static async Task<IResult> UpdateTransaction(
+            int id,
+            FinancialTransactionDTO inputTransaction,
+            IFinancialTransactionRepository repository,
+            IMapper mapper,
+            IValidator<FinancialTransactionDTO> validator)
         {
+            var validationResult = validator.Validate(inputTransaction);
+
+            if (!validationResult.IsValid)
+            {
+                return Results.ValidationProblem(validationResult.ToValidationProblems());
+            }
+
             var mappedTransaction = mapper.Map<FinancialTransaction>(inputTransaction);
             mappedTransaction.Id = id;
 
