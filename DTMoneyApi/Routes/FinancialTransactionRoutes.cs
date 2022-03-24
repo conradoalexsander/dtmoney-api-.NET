@@ -11,18 +11,17 @@ namespace DTMoney.Api.Routes
     {
         public static void UseFinancialTransactionRoutes(this WebApplication app)
         {
+            app.MapGet("/api/transactions", GetAllTransactions);
 
-            app.MapGet("/transactions", GetAllTransactions);
+            app.MapGet("/api/transactions/{id}", GetTransactionById);
 
-            app.MapGet("/transactions/{id}", GetTransactionById);
+            app.MapGet("/api/transactions/types", GetTransactionTypes);
 
-            app.MapGet("/transactions/types", GetTransactionTypes);
+            app.MapPost("/api/transactions", CreateTransaction);
 
-            app.MapPost("/transactions", CreateTransaction);
+            app.MapPut("/api/transactions/{id}", UpdateTransaction);
 
-            app.MapPut("/transactions/{id}", UpdateTransaction);
-
-            app.MapDelete("/transactions/{id}", DeleteTransactionById);
+            app.MapDelete("/api/transactions/{id}", DeleteTransactionById);
 
         }
 
